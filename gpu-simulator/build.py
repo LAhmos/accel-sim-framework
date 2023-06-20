@@ -6,13 +6,13 @@ from colorama import init, Fore
 
 def run_makefile_command(command):
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=script_dir)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=script_dir)
 
     # Initialize the list of filenames
     filenames = []
     warnings = []
     errors = []
-
+    add_warning = False
     # Read the output of the command line by line
     for line_bytes in iter(process.stdout.readline, b''):
         
@@ -34,11 +34,22 @@ def run_makefile_command(command):
             
 
             # Clear the console
-            
-        if re.search(r'(warning)', line, re.IGNORECASE):
-            warnings.append(line)
-        if re.search(r'(error)', line, re.IGNORECASE):
-            errors.append(line)
+    for line_bytes in iter(process.stderr.readline, b''):
+        
+        line = line_bytes.decode('utf-8', errors='replace').strip()
+
+
+  
+            # Clear the console  
+        # if re.search(r'(warning)', line, re.IGNORECASE):
+        #     add_warning = True
+        #     warnings.append(line)
+        # if re.search(r'(error)', line, re.IGNORECASE):
+        #     errors.append(line)
+        #     add_warning = False
+        # else:
+        warnings.append(line)
+        
         # Display the current files being compiled
         # print("Compiling:", ", ".join(filenames))
 
